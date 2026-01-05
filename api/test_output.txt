@@ -1,0 +1,56 @@
+﻿node.exe : npm warn invalid config cache=false set in command line options
+Au caractère Ligne:1 : 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm warn invali...nd line options:String) [ 
+   ], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm warn invalid config Must be valid filesystem path
+
+> @librechat/backend@v0.8.2-rc1 test
+> cross-env NODE_ENV=test jest models/Transaction.spec.js
+
+(node:25428) [MONGOOSE] Warning: Duplicate schema index on {"user":1} found. This is 
+often due to declaring an index using both "index: true" and "schema.index()". Please 
+remove the duplicate index definition.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25428) [MONGOOSE] Warning: Duplicate schema index on {"role":1} found. This is 
+often due to declaring an index using both "index: true" and "schema.index()". Please 
+remove the duplicate index definition.
+(node:25428) [MONGOOSE] Warning: Duplicate schema index on {"group":1} found. This is 
+often due to declaring an index using both "index: true" and "schema.index()". Please 
+remove the duplicate index definition.
+PASS models/Transaction.spec.js (11.971 s)
+  Regular Token Spending Tests
+    ÔêÜ Balance should decrease when spending tokens with spendTokens (312 ms)
+    ÔêÜ spendTokens should handle zero completion tokens (239 ms)
+    ÔêÜ spendTokens should handle undefined token counts (183 ms)
+    ÔêÜ spendTokens should handle only prompt tokens (198 ms)
+    ÔêÜ spendTokens should not update balance when balance feature is disabled (43 ms)
+  Structured Token Spending Tests
+    ÔêÜ Balance should decrease and rawAmount should be set when spending a large number 
+of structured tokens (52 ms)
+    ÔêÜ should handle zero completion tokens in structured spending (37 ms)
+    ÔêÜ should handle only prompt tokens in structured spending (33 ms)
+    ÔêÜ should handle undefined token counts in structured spending (16 ms)
+    ÔêÜ should handle incomplete context for completion tokens (35 ms)
+  NaN Handling Tests
+    ÔêÜ should skip transaction creation when rawAmount is NaN (16 ms)
+  Transactions Config Tests
+    ÔêÜ createTransaction should not save when transactions.enabled is false (18 ms)
+    ÔêÜ createTransaction should save when transactions.enabled is true (33 ms)
+    ÔêÜ createTransaction should save when balance.enabled is true even if transactions 
+config is missing (33 ms)
+    ÔêÜ createTransaction should save transaction but not update balance when balance is 
+disabled but transactions enabled (28 ms)
+    ÔêÜ createStructuredTransaction should not save when transactions.enabled is false 
+(15 ms)
+    ÔêÜ createStructuredTransaction should save transaction but not update balance when 
+balance is disabled but transactions enabled (28 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       17 passed, 17 total
+Snapshots:   0 total
+Time:        12.082 s
+Ran all test suites matching models/Transaction.spec.js.

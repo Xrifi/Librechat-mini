@@ -1,0 +1,41 @@
+version: 1.2.1
+
+cache: true
+
+interface:
+  privacyPolicy:
+    externalUrl: 'https://librechat.ai/privacy-policy'
+    openNewTab: true
+  termsOfService:
+    externalUrl: 'https://librechat.ai/tos'
+    openNewTab: true
+  endpointsMenu: true
+  modelSelect: true
+  parameters: true
+  sidePanel: true
+  presets: true
+  prompts: true
+  bookmarks: true
+  multiConvo: true
+  agents: true
+
+# Enable Balance and Transactions for Quota enforcement
+balance:
+  enabled: true
+  startBalance: 500000 # 500,000 credits to start
+  autoRefillEnabled: false
+
+transactions:
+  enabled: true
+
+registration:
+  socialLogins: ['github', 'google', 'discord', 'openid']
+
+# Default endpoints (can be overridden by .env)
+endpoints:
+  openAI:
+    apiKey: '${OPENAI_API_KEY}'
+  google:
+    apiKey: '${GOOGLE_KEY}'
+  anthropic:
+    apiKey: '${ANTHROPIC_API_KEY}'

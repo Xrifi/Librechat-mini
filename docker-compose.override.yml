@@ -1,0 +1,18 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: librechat-local:latest
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - MONGO_URI=mongodb://mongodb:27017/LibreChat
+      - MEILI_HOST=http://meilisearch:7700
+      - CHECK_BALANCE=true
+    volumes:
+      - ./.env:/app/.env
+      - ./librechat.yaml:/app/librechat.yaml
+      - ./images:/app/client/public/images
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
