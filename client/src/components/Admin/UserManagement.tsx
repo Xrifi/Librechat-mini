@@ -48,8 +48,8 @@ const UserManagement = () => {
                     <thead className="bg-surface-secondary/50 text-text-secondary font-semibold border-b border-border-light">
                         <tr>
                             <th className="px-4 py-3">Utilisateur</th>
-                            <th className="px-4 py-3">Rôle</th>
-                            <th className="px-4 py-3">Quota</th>
+                            <th className="px-4 py-3">Rôle / Quota</th>
+                            <th className="px-4 py-3">Usage (Mois)</th>
                             <th className="px-4 py-3">Solde (cr)</th>
                             <th className="px-4 py-3 border-l border-border-light w-20"></th>
                         </tr>
@@ -65,11 +65,17 @@ const UserManagement = () => {
                                     <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border ${user.role === 'ADMIN' ? 'text-red-500 border-red-500/30 bg-red-500/5' : 'text-text-secondary border-border-light bg-surface-primary'}`}>
                                         {user.role}
                                     </span>
+                                    <div className="mt-1">
+                                        <span className="text-[10px] text-text-secondary bg-surface-primary px-1 py-0.5 rounded border border-border-light">
+                                            {user.quota || 'Défaut'}
+                                        </span>
+                                    </div>
                                 </td>
                                 <td className="px-4 py-3">
-                                    <span className="text-[10px] text-text-secondary bg-surface-primary px-1.5 py-0.5 rounded border border-border-light">
-                                        {user.quota || 'Défaut'}
-                                    </span>
+                                    <div className="text-text-primary font-bold">{user.usageMonth?.toLocaleString() || 0}</div>
+                                    <div className="text-[10px] text-text-secondary">
+                                        ≈ ${((user.usageMonth || 0) / 1000000).toFixed(4)}
+                                    </div>
                                 </td>
                                 <td className="px-4 py-3 font-mono font-bold text-primary">
                                     {user.balance?.toLocaleString()}

@@ -1,5 +1,5 @@
 const express = require('express');
-const { User, Balance, QuotaAssignment } = require('~/db/models');
+const { User, Balance, QuotaAssignment, UsageRollup } = require('~/db/models');
 const { logAdminAction } = require('./quotas'); // We can reuse the audit logger
 const router = express.Router();
 
@@ -30,11 +30,33 @@ router.get('/', async (req, res) => {
         // Fetch quota assignments
         const assignments = await QuotaAssignment.find({ user: { $in: userIds } }).populate('profileId').lean();
 
+        // Calculate current month start
+        const monthStart = new Date();
+        monthStart.setUTCDate(1);
+        monthStart.setUTCHours(0, 0, 0, 0);
+
+        // Fetch monthly usage
+        const monthlyUsage = await UsageRollup.aggregate([
+            {
+                $match: {
+                    user: { $in: userIds },
+                    periodStart: { $gte: monthStart }
+                }
+            },
+            {
+                $group: {
+                    _id: '$user',
+                    total: { $sum: '$creditsConsumed' }
+                }
+            }
+        ]);
+
         const usersWithBalances = users.map(user => ({
             ...user,
             balance: balances.find(b => b.user.toString() === user._id.toString())?.tokenCredits || 0,
             quota: assignments.find(a => a.user.toString() === user._id.toString())?.profileId?.name,
-            quotaAssignmentId: assignments.find(a => a.user.toString() === user._id.toString())?._id
+            quotaAssignmentId: assignments.find(a => a.user.toString() === user._id.toString())?._id,
+            usageMonth: monthlyUsage.find(u => u._id.toString() === user._id.toString())?.total || 0
         }));
 
         res.json({
