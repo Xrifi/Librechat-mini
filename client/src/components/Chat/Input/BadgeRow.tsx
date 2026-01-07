@@ -100,13 +100,13 @@ interface DragState {
 
 type DragAction =
   | {
-      type: 'START_DRAG';
-      badge: BadgeItem;
-      mouseX: number;
-      offsetX: number;
-      insertIndex: number;
-      isActive: boolean;
-    }
+    type: 'START_DRAG';
+    badge: BadgeItem;
+    mouseX: number;
+    offsetX: number;
+    insertIndex: number;
+    isActive: boolean;
+  }
   | { type: 'UPDATE_POSITION'; mouseX: number; insertIndex: number }
   | { type: 'END_DRAG' };
 
@@ -319,8 +319,11 @@ function BadgeRow({
     };
   }, [dragState.draggedBadge, handleMouseMove, handleMouseUp]);
 
+  const conversation = useRecoilValue(store.conversationByIndex(conversationId ?? 0));
+  const endpoint = conversation?.endpoint;
+
   return (
-    <BadgeRowProvider conversationId={conversationId} isSubmitting={isSubmitting}>
+    <BadgeRowProvider conversationId={conversationId} isSubmitting={isSubmitting} endpoint={endpoint}>
       <div ref={containerRef} className="relative flex flex-wrap items-center gap-2">
         {showEphemeralBadges === true && <ToolsDropdown />}
         {tempBadges.map((badge, index) => (

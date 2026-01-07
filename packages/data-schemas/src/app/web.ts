@@ -12,6 +12,10 @@ export const webSearchAuth = {
       /** Optional (0) */
       searxngApiKey: 0 as const,
     },
+    google: {
+      googleSearchApiKey: 1 as const,
+      googleCseId: 1 as const,
+    },
   },
   scrapers: {
     firecrawl: {
@@ -72,6 +76,8 @@ export function loadWebSearchConfig(
   const jinaApiKey = config?.jinaApiKey ?? '${JINA_API_KEY}';
   const jinaApiUrl = config?.jinaApiUrl ?? '${JINA_API_URL}';
   const cohereApiKey = config?.cohereApiKey ?? '${COHERE_API_KEY}';
+  const googleSearchApiKey = config?.googleSearchApiKey ?? '${GOOGLE_SEARCH_API_KEY}';
+  const googleCseId = config?.googleCseId ?? '${GOOGLE_CSE_ID}';
   const safeSearch = config?.safeSearch ?? SafeSearchTypes.MODERATE;
 
   return {
@@ -86,5 +92,7 @@ export function loadWebSearchConfig(
     firecrawlApiUrl,
     firecrawlVersion,
     searxngInstanceUrl,
+    googleSearchApiKey,
+    googleCseId,
   };
 }

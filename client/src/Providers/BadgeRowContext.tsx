@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { Tools, Constants, LocalStorageKeys, AgentCapabilities } from 'librechat-data-provider';
+import { Tools, Constants, LocalStorageKeys, AgentCapabilities, EModelEndpoint } from 'librechat-data-provider';
 import type { TAgentsEndpoint } from 'librechat-data-provider';
 import {
   useMCPServerManager,
@@ -38,12 +38,14 @@ interface BadgeRowProviderProps {
   children: React.ReactNode;
   isSubmitting?: boolean;
   conversationId?: string | null;
+  endpoint?: string | null;
 }
 
 export default function BadgeRowProvider({
   children,
   isSubmitting,
   conversationId,
+  endpoint,
 }: BadgeRowProviderProps) {
   const lastKeyRef = useRef<string>('');
   const hasInitializedRef = useRef(false);
@@ -164,6 +166,7 @@ export default function BadgeRowProvider({
     toolKey: Tools.web_search,
     localStorageKey: LocalStorageKeys.LAST_WEB_SEARCH_TOGGLE_,
     setIsDialogOpen: setWebSearchDialogOpen,
+    isAuthenticated: endpoint === EModelEndpoint.google ? true : undefined,
     authConfig: {
       toolId: Tools.web_search,
       queryOptions: { retry: 1 },

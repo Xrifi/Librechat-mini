@@ -780,6 +780,7 @@ export enum SearchCategories {
 export enum SearchProviders {
   SERPER = 'serper',
   SEARXNG = 'searxng',
+  GOOGLE = 'google',
 }
 
 export enum ScraperProviders {
@@ -808,6 +809,8 @@ export const webSearchSchema = z.object({
   jinaApiKey: z.string().optional().default('${JINA_API_KEY}'),
   jinaApiUrl: z.string().optional().default('${JINA_API_URL}'),
   cohereApiKey: z.string().optional().default('${COHERE_API_KEY}'),
+  googleSearchApiKey: z.string().optional().default('${GOOGLE_SEARCH_API_KEY}'),
+  googleCseId: z.string().optional().default('${GOOGLE_CSE_ID}'),
   searchProvider: z.nativeEnum(SearchProviders).optional(),
   scraperProvider: z.nativeEnum(ScraperProviders).optional(),
   rerankerType: z.nativeEnum(RerankerTypes).optional(),
