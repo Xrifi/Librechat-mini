@@ -35,6 +35,29 @@ export async function initializeGoogle({
     userKey = await db.getUserKey({ userId: req.user?.id, name: EModelEndpoint.google });
   }
 
+  // Auto-enable Native Grounding if 'web_search' tool is requested
+  const requestedTools = req.body.tools || [];
+  console.log('[initializeGoogle] Incoming req.body.tools:', requestedTools);
+
+  // Check if web_search is in the tools array (how frontend sends it)
+  const hasWebSearchTool = Array.isArray(requestedTools) && requestedTools.includes('web_search');
+
+  if (hasWebSearchTool) {
+    console.log('[initializeGoogle] web_search tool found in request. Enabling Native Grounding.');
+    if (!model_parameters) {
+      model_parameters = {};
+    }
+    model_parameters.web_search = true;
+
+    // Remove web_search from tools to prevent generic tool usage
+    if (Array.isArray(req.body.tools)) {
+      req.body.tools = req.body.tools.filter((tool: string) => tool !== 'web_search');
+      console.log('[initializeGoogle] Removed web_search from req.body.tools to prevent generic tool usage.');
+    }
+  } else {
+    console.log('[initializeGoogle] web_search tool NOT found in request.');
+  }
+
   let serviceKey: Record<string, unknown> = {};
 
   /** Check if GOOGLE_KEY is provided at all (including 'user_provided') */
@@ -59,9 +82,9 @@ export async function initializeGoogle({
   const credentials: GoogleCredentials = isUserProvided
     ? (userKey as GoogleCredentials)
     : {
-        [AuthKeys.GOOGLE_SERVICE_KEY]: serviceKey,
-        [AuthKeys.GOOGLE_API_KEY]: GOOGLE_KEY,
-      };
+      [AuthKeys.GOOGLE_SERVICE_KEY]: serviceKey,
+      [AuthKeys.GOOGLE_API_KEY]: GOOGLE_KEY,
+    };
 
   let clientOptions: GoogleConfigOptions = {};
 

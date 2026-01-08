@@ -30,6 +30,8 @@ interface BadgeRowProps {
   conversationId?: string | null;
   isSubmitting?: boolean;
   isInChat: boolean;
+  index: number;
+  endpoint?: string | null;
 }
 
 interface BadgeWrapperProps {
@@ -146,6 +148,8 @@ function BadgeRow({
   onChange,
   onToggle,
   isInChat,
+  index,
+  endpoint,
 }: BadgeRowProps) {
   const [orderedBadges, setOrderedBadges] = useState<BadgeItem[]>([]);
   const [dragState, dispatch] = useReducer(dragReducer, {
@@ -319,9 +323,7 @@ function BadgeRow({
     };
   }, [dragState.draggedBadge, handleMouseMove, handleMouseUp]);
 
-  const conversation = useRecoilValue(store.conversationByIndex(conversationId ?? 0));
-  const endpoint = conversation?.endpoint;
-
+  console.log('[BadgeRow] endpoint:', endpoint, 'showEphemeralBadges:', showEphemeralBadges);
   return (
     <BadgeRowProvider conversationId={conversationId} isSubmitting={isSubmitting} endpoint={endpoint}>
       <div ref={containerRef} className="relative flex flex-wrap items-center gap-2">

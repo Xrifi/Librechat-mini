@@ -3,6 +3,7 @@ import {
   ErrorTypes,
   EModelEndpoint,
   EToolResources,
+  Tools,
   paramEndpoints,
   isAgentsEndpoint,
   replaceSpecialVars,
@@ -149,6 +150,14 @@ export async function initializeAgent(
 
   const provider = agent.provider;
   agent.endpoint = provider;
+
+  if (
+    provider === EModelEndpoint.google &&
+    Array.isArray(agent.tools) &&
+    agent.tools.includes(Tools.web_search)
+  ) {
+    modelOptions.web_search = true;
+  }
 
   /**
    * Load conversation files for ALL agents, not just the initial agent.

@@ -293,7 +293,10 @@ export function getGoogleConfig(
   const tools: GoogleAIToolType[] = [];
 
   if (enableWebSearch) {
+    console.log('[getGoogleConfig] Pushing googleSearch tool to configuration.');
     tools.push({ googleSearch: {} });
+  } else {
+    console.log('[getGoogleConfig] web_search not enabled in options.');
   }
 
   // Return the final shape

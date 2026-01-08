@@ -22,6 +22,7 @@ interface BadgeRowContextType {
   codeApiKeyForm: ReturnType<typeof useCodeApiKeyForm>;
   searchApiKeyForm: ReturnType<typeof useSearchApiKeyForm>;
   mcpServerManager: ReturnType<typeof useMCPServerManager>;
+  endpoint?: string | null;
 }
 
 const BadgeRowContext = createContext<BadgeRowContextType | undefined>(undefined);
@@ -108,6 +109,17 @@ export default function BadgeRowProvider({
         }
       }
 
+      /* Force Google Search OFF for new conversations */
+      if (
+        key === Constants.NEW_CONVO &&
+        (endpoint === EModelEndpoint.google ||
+          endpoint === 'google' ||
+          endpoint === 'vertexai' ||
+          (endpoint && typeof endpoint === 'string' && endpoint.toLowerCase().includes('google')))
+      ) {
+        initialValues[Tools.web_search] = false;
+      }
+
       /**
        * Always set values for all tools (use defaults if not in `localStorage`)
        * If `ephemeralAgent` is `null`, create a new object with just our tool values
@@ -166,7 +178,13 @@ export default function BadgeRowProvider({
     toolKey: Tools.web_search,
     localStorageKey: LocalStorageKeys.LAST_WEB_SEARCH_TOGGLE_,
     setIsDialogOpen: setWebSearchDialogOpen,
-    isAuthenticated: endpoint === EModelEndpoint.google ? true : undefined,
+    isAuthenticated:
+      (endpoint === EModelEndpoint.google ||
+        endpoint === 'google' ||
+        endpoint === 'vertexai' ||
+        (endpoint && typeof endpoint === 'string' && endpoint.toLowerCase().includes('google')))
+        ? true
+        : undefined,
     authConfig: {
       toolId: Tools.web_search,
       queryOptions: { retry: 1 },
@@ -201,6 +219,7 @@ export default function BadgeRowProvider({
     codeInterpreter,
     searchApiKeyForm,
     mcpServerManager,
+    endpoint,
   };
 
   return <BadgeRowContext.Provider value={value}>{children}</BadgeRowContext.Provider>;

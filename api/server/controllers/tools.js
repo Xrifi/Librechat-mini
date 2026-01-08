@@ -152,6 +152,8 @@ const callTool = async (req, res) => {
       user: req.user.id,
       tools: [toolId],
       functions: true,
+      endpoint: message.endpoint,
+      model: message.model,
       options: {
         req,
         returnMetadata: true,

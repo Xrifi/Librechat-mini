@@ -18,6 +18,7 @@ interface:
   bookmarks: true
   multiConvo: true
   agents: true
+  fileSearch: true
 
 # Enable Balance and Transactions for Quota enforcement
 balance:
@@ -30,6 +31,17 @@ transactions:
 
 registration:
   socialLogins: ['github', 'google', 'discord', 'openid']
+
+# File storage configuration
+fileConfig:
+  endpoints:
+    default:
+      fileLimit: 3
+      fileSizeLimit: 2
+      totalSizeLimit: 10
+    google:
+      fileLimit: 10
+  serverFileSizeLimit: 50
 
 # Default endpoints (can be overridden by .env)
 endpoints:

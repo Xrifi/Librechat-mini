@@ -452,6 +452,7 @@ async function loadAgentTools({
     functions: true,
     user: req.user.id,
     tools: _agentTools,
+    endpoint: agent.provider,
     options: {
       req,
       res,

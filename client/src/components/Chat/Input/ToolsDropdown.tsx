@@ -34,6 +34,7 @@ const ToolsDropdown = ({ disabled }: ToolsDropdownProps) => {
     codeApiKeyForm,
     codeInterpreter,
     searchApiKeyForm,
+    endpoint,
   } = useBadgeRowContext();
   const { data: startupConfig } = useGetStartupConfig();
 
@@ -77,11 +78,22 @@ const ToolsDropdown = ({ disabled }: ToolsDropdownProps) => {
     permission: Permissions.USE,
   });
 
+  const isGemini = useMemo(() => {
+    return (
+      endpoint === 'google' ||
+      endpoint === 'vertexai' ||
+      (endpoint && typeof endpoint === 'string' && endpoint.toLowerCase().includes('google'))
+    );
+  }, [endpoint]);
+
   const showWebSearchSettings = useMemo(() => {
+    if (isGemini) {
+      return false;
+    }
     const authTypes = webSearchAuthData?.authTypes ?? [];
     if (authTypes.length === 0) return true;
     return !authTypes.every(([, authType]) => authType === AuthType.SYSTEM_DEFINED);
-  }, [webSearchAuthData?.authTypes]);
+  }, [webSearchAuthData?.authTypes, isGemini]);
 
   const showCodeSettings = useMemo(
     () => codeAuthData?.message !== AuthType.SYSTEM_DEFINED,
@@ -172,9 +184,12 @@ const ToolsDropdown = ({ disabled }: ToolsDropdownProps) => {
       hideOnClick: false,
       render: (props) => (
         <div {...props}>
-          <div className="flex items-center gap-2">
-            <Globe className="icon-md" aria-hidden="true" />
-            <span>{localize('com_ui_web_search')}</span>
+          <div className="flex items-center gap-2 text-text-primary">
+            <Globe
+              className={cn('icon-md', isGemini && 'text-blue-600 dark:text-blue-400')}
+              aria-hidden="true"
+            />
+            <span>{isGemini ? 'Google Search' : localize('com_ui_web_search')}</span>
           </div>
           <div className="flex items-center gap-1">
             {showWebSearchSettings && (

@@ -162,16 +162,32 @@ const loadTools = async ({
   agent,
   model,
   signal,
-  endpoint,
-  userMCPAuthMap,
+  endpoint: _endpoint,
   tools = [],
   options = {},
-  functions = true,
+  functions = false,
   returnMap = false,
-  webSearch,
+  useSpecs = false,
+  webSearch = {},
   fileStrategy,
   imageOutputType,
+  userMCPAuthMap = {},
 }) => {
+  const { req } = options;
+  let endpoint = _endpoint;
+  if (!endpoint && req?.body?.endpoint) {
+    endpoint = req.body.endpoint;
+  }
+
+  if (!endpoint && model && model.toLowerCase().includes('gemini')) {
+    endpoint = 'google';
+  }
+
+  // Fallback for agent provider if not passed explicitly
+  if (!endpoint && agent?.provider) {
+    endpoint = agent.provider;
+  }
+
   const toolConstructors = {
     flux: FluxAPI,
     calculator: Calculator,
@@ -324,6 +340,11 @@ const loadTools = async ({
       };
       continue;
     } else if (tool === Tools.web_search) {
+      console.log('[handleTools] Checking web_search. Endpoint:', endpoint, 'Type:', typeof endpoint);
+      if (endpoint === EModelEndpoint.google || endpoint === 'google' || endpoint === 'vertexai') {
+        console.log('[handleTools] Skipping generic web_search for Google endpoint in favor of native grounding.');
+        continue;
+      }
       const result = await loadWebSearchAuth({
         userId: user,
         loadAuthValues,
@@ -479,10 +500,10 @@ Anchor pattern: \\ue202turn{N}{type}{index} where N=turn number, type=search|new
           config.type === 'all'
             ? await createMCPTools(mcpParams)
             : await createMCPTool({
-                ...mcpParams,
-                availableTools,
-                toolKey: config.toolKey,
-              });
+              ...mcpParams,
+              availableTools,
+              toolKey: config.toolKey,
+            });
 
         if (Array.isArray(mcpTool)) {
           loadedTools.push(...mcpTool);
